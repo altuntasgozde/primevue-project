@@ -18,6 +18,11 @@
       <Column field="name" header="Name"></Column>
       <Column field="surname" header="Surname"></Column>
       <Column field="age" header="Age"></Column>
+      <Column header="Actions">
+        <template #body="{ data }">
+          <button @click="removeData(data)" class="remove-button">Remove</button>
+        </template>
+      </Column>
     </DataTable>
   </main>
 </template>
@@ -56,6 +61,12 @@ export default {
       this.surname = "";
       this.age = "";
     },
+    removeData(item) {
+      const index = this.data.indexOf(item);
+      if (index !== -1) {
+        this.data.splice(index, 1);
+      }
+    },
   },
 };
 </script>
@@ -67,5 +78,10 @@ export default {
 }
 .invalid-input {
   border-color: red;
+}
+.remove-button {
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;
 }
 </style>
