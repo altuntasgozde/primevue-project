@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="filter-form">
+    <!-- <div class="filter-form">
       <div class="form-group">
         <InputText v-model="nameFilter" placeholder="Filter by Name" />
       </div>
@@ -16,7 +16,7 @@
       <div class="form-group">
         <InputText v-model="locationFilter" placeholder="Filter by Location" />
       </div>
-    </div>
+    </div> -->
 
     <div class="form-group">
       <InputText v-model="name" placeholder="Name" />
@@ -45,36 +45,27 @@
     </Button>
 
     <DataTable
-      :value="filteredData"
+      :value="data"
       :paginator="true"
       :rows="10"
       :rowsPerPageOptions="[5, 10, 20]"
       :sortMode="'multiple'"
+      stripedRows
     >
       <Column field="name" header="Name" :sortable="true" filterMatchMode="contains">
-        <template #filter>
-          <InputText v-model="nameFilter" placeholder="Filter by Name" />
-        </template>
+        
       </Column>
       <Column field="surname" header="Surname" :sortable="true" filterMatchMode="contains">
-        <template #filter>
-          <InputText v-model="surnameFilter" placeholder="Filter by Surname" />
-        </template>
+        
       </Column>
       <Column field="age" header="Age" :sortable="true" filterMatchMode="equals">
-        <template #filter>
-          <InputText v-model="ageFilter" placeholder="Filter by Age" />
-        </template>
+        
       </Column>
       <Column field="schoolNumber" header="School Number" :sortable="true" filterMatchMode="contains">
-        <template #filter>
-          <InputText v-model="schoolNumberFilter" placeholder="Filter by School Number" />
-        </template>
+        
       </Column>
       <Column field="location" header="Location" :sortable="true" filterMatchMode="contains">
-        <template #filter>
-          <InputText v-model="locationFilter" placeholder="Filter by Location" />
-        </template>
+       
       </Column>
       <Column header="Actions">
         <template #body="{ data }">
@@ -87,31 +78,39 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios'; 
 
 export default {
   setup() {
-    const nameFilter = ref('');
-    const surnameFilter = ref('');
-    const ageFilter = ref('');
-    const schoolNumberFilter = ref('');
-    const locationFilter = ref('');
+    // const nameFilter = ref('');
+    // const surnameFilter = ref('');
+    // const ageFilter = ref('');
+    // const schoolNumberFilter = ref('');
+    // const locationFilter = ref('');
     const name = ref('');
     const surname = ref('');
     const age = ref('');
     const schoolNumber = ref('');
     const location = ref('');
     const data = ref([
-      {
-        name: "John",
-        surname: "Doe",
-        age: 30,
-        schoolNumber: "12345",
-        location: "İstanbul",
-      },
+
     ]);
     const isAgeValid = ref(true);
     const editingIndex = ref(-1);
+
+     const fetchData = async () => {
+      try {
+        const response = await axios.get('https://64fd9262596493f7af7e55ce.mockapi.io/students');
+        data.value = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    onMounted(() => {
+      fetchData();
+    });
 
     const validateAge = () => {
       const parsedAge = parseInt(age.value, 10);
@@ -166,24 +165,24 @@ export default {
       }
     };
 
-    const filteredData = computed(() => {
-      return data.value.filter((item) => {
-        const nameMatch = item.name.toLowerCase().includes(nameFilter.value.toLowerCase());
-        const surnameMatch = item.surname.toLowerCase().includes(surnameFilter.value.toLowerCase());
-        const ageMatch = ageFilter.value === '' || item.age === parseInt(ageFilter.value, 10);
-        const schoolNumberMatch = item.schoolNumber.toLowerCase().includes(schoolNumberFilter.value.toLowerCase());
-        const locationMatch = item.location.toLowerCase().includes(locationFilter.value.toLowerCase());
+    // const filteredData = computed(() => {
+    //   return data.value.filter((item) => { 
+    //     const nameMatch = item.name.toLowerCase().includes(nameFilter.value.toLowerCase());
+    //     const surnameMatch = item.surname.toLowerCase().includes(surnameFilter.value.toLowerCase());
+    //     const ageMatch = ageFilter.value === '' || item.age === parseInt(ageFilter.value, 10);
+    //     const schoolNumberMatch = item.schoolNumber.toLowerCase().includes(schoolNumberFilter.value.toLowerCase());
+    //     const locationMatch = item.location.toLowerCase().includes(locationFilter.value.toLowerCase());
 
-        return nameMatch && surnameMatch && ageMatch && schoolNumberMatch && locationMatch;
-      });
-    });
+    //     return nameMatch && surnameMatch && ageMatch && schoolNumberMatch && locationMatch;
+    //   });
+    // });
 
     return {
-      nameFilter,
-      surnameFilter,
-      ageFilter,
-      schoolNumberFilter,
-      locationFilter,
+      // nameFilter,
+      // surnameFilter,
+      // ageFilter,
+      // schoolNumberFilter,
+      // locationFilter,
       name,
       surname,
       age,
@@ -196,7 +195,7 @@ export default {
       addOrUpdateData,
       editData,
       removeData,
-      filteredData,
+      // filteredData,
     };
   },
 };
